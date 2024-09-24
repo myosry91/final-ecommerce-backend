@@ -38,8 +38,8 @@ userSchema.pre('save', async function (next) {
   })
 
 userSchema.post('save', function(doc) {    
-    if (doc.profileImg) {        
-        const imgUrl = `${process.env.BASE_URL}/users/${doc.profileImg}`;
+    if (doc.profileImg) {                
+        const imgUrl = `${process.env.BASE_URL}/users/${doc.profileImg}`;        
         doc.profileImg = imgUrl;
     }
 });
