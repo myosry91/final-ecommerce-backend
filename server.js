@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser")
 
 const ApiError = require("./utils/ApiError")
 const userRoutes = require("./routes/user")
+const categoriesRoutes = require("./routes/categories");
 const { DBConnection } = require('./configs/DB')
 const app = express()
 DBConnection()
@@ -21,6 +22,7 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname,"uploads")))
 // Mount Routes
 app.use('/api/v1/users', userRoutes)
+app.use(`/api/v1/categories`, categoriesRoutes);
 
 
 app.all("*", (req, res, next) => {
