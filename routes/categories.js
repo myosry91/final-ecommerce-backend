@@ -1,78 +1,48 @@
-const { Category } = require("../models/category");
+const {
+  getAllCategories,
+  getSingleCategory,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+  uploadCategoryImg,
+} = require("../controllers/categoryController");
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
 
-// Get all the categories
-router.get(`/`, async (req, res) => {
-  const categoryList = await Category.find();
+const FILE_TYPE_MAP = {
+  "image/png": "png",
+  "image/jpeg": "jpeg",
+  "image/jpg": "jpg",
+};
 
-  if (!categoryList) {
-    res.status(500).json({ success: false });
-  }
-  res.status(200).send(categoryList);
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const isValid = FILE_TYPE_MAP[file.mimetype];
+    let uploadError = new Error("invalid image type");
+
+    if (isValid) {
+      uploadError = null;
+    }
+    cb(uploadError, "uploads/categories");
+  },
+  filename: function (req, file, cb) {
+    const fileName = file.originalname.split(" ").join("-");
+    const extension = FILE_TYPE_MAP[file.mimetype];
+    cb(null, `${fileName}-${Date.now()}.${extension}`);
+  },
 });
 
-// Get the category by id
-router.get("/:id", async (req, res) => {
-  const category = await Category.findById(req.params.id);
+const uploadOptions = multer({ storage: storage });
 
-  if (!category) {
-    res
-      .status(500)
-      .json({ message: "The category with the given ID was not found." });
-  }
-  res.status(200).send(category);
-});
-
-// Add the category
-router.post("/", async (req, res) => {
-  let category = new Category({
-    name: req.body.name,
-    icon: req.body.icon,
-    color: req.body.color,
-  });
-  category = await category.save();
-
-  if (!category) return res.status(400).send("the category cannot be created!");
-
-  res.send(category);
-});
-
-// Update the category by id
-router.put("/:id", async (req, res) => {
-  const category = await Category.findByIdAndUpdate(
-    req.params.id,
-    {
-      name: req.body.name,
-      icon: req.body.icon || category.icon,
-      color: req.body.color,
-    },
-    { new: true }
-  );
-
-  if (!category) return res.status(400).send("the category cannot be created!");
-
-  res.send(category);
-});
-
-// Delete the category by id
-router.delete("/:id", (req, res) => {
-  Category.findByIdAndDelete(req.params.id) 
-    .then((category) => {
-      if (category) {
-        return res
-          .status(200)
-          .json({ success: true, message: "The category is deleted!" });
-      } else {
-        return res
-          .status(404)
-          .json({ success: false, message: "Category not found!" });
-      }
-    })
-    .catch((err) => {
-      return res.status(500).json({ success: false, error: err });
-    });
-});
-
+router
+  .route("/")
+  .get(getAllCategories)
+  .post(uploadOptions.single("image"), createCategory);
+router
+  .route("/:id")
+  .get(getSingleCategory)
+  .put(uploadOptions.single("image"), updateCategory)
+  .delete(deleteCategory);
 
 module.exports = router;
