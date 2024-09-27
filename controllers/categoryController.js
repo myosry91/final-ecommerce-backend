@@ -30,12 +30,12 @@ exports.getSingleCategory = asyncWrapper(async (req, res, next) => {
 });
 
 // Add the category
-exports.createCategory = asyncWrapper(async (req, res) => {
+exports.createCategory = asyncWrapper(async (req, res, next) => {
   const file = req.file;
   if (!file) return next(new ApiError("No image in the request", 400));
 
   const fileName = file.filename;
-  const basePath = `${req.protocol}://${req.get("host")}/uploads/categories.js`;
+  const basePath = `${req.protocol}://${req.get("host")}/uploads/categories/`;
 
   let category = new Category({
     name: req.body.name,
@@ -69,7 +69,7 @@ exports.updateCategory = asyncWrapper(async (req, res, next) => {
     req.params.id,
     {
       name: req.body.name,
-      image: imagePath, 
+      image: imagePath,
     },
     { new: true }
   );
@@ -79,7 +79,6 @@ exports.updateCategory = asyncWrapper(async (req, res, next) => {
     data: updatedCategory,
   });
 });
-
 
 // Delete the category by id
 exports.deleteCategory = asyncWrapper(async (req, res, next) => {
