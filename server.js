@@ -1,14 +1,16 @@
 const path = require("path")
 
-require('dotenv').config()
+require('dotenv').config();
 const express = require("express")
 const morgan = require("morgan")
 const cookieParser = require("cookie-parser")
 
 const ApiError = require("./utils/ApiError")
 const userRoutes = require("./routes/user")
-const categoriesRoutes = require("./routes/categories");
-const brandsRoutes = require("./routes/brands");
+const categoriesRoutes = require("./routes/categoryRoute");
+const brandsRoutes = require("./routes/brandRoute");
+const authRoutes = require("./routes/authRoute")
+const productsRoutes = require("./routes/productRoute")
 const { DBConnection } = require('./configs/DB')
 const app = express()
 DBConnection()
@@ -22,9 +24,11 @@ app.use(express.urlencoded())
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname,"uploads")))
 // Mount Routes
+app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/users', userRoutes)
 app.use(`/api/v1/categories`, categoriesRoutes);
 app.use(`/api/v1/brands`, brandsRoutes);
+app.use(`/api/v1/products`, productsRoutes);
 
 
 app.all("*", (req, res, next) => {

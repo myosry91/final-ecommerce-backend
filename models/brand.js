@@ -3,11 +3,15 @@ const mongoose = require("mongoose");
 const brandSchema = mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: [true, "Brand name is required"],
+    unique: true,
+    trim: true,
+    minlength: [2, "Brand name must be at least 2 characters long"], 
+    maxlength: [200, "Brand name must be at most 20 characters long"], 
   },
   logo: {
     type: String,
-    // required: true,
+    required: [true, "Brand logo is required"],  
   },
 });
 
