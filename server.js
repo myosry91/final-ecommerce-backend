@@ -4,6 +4,7 @@ require('dotenv').config();
 const express = require("express")
 const morgan = require("morgan")
 const cookieParser = require("cookie-parser")
+const cors = require("cors")
 
 const ApiError = require("./utils/ApiError")
 const userRoutes = require("./routes/user")
@@ -19,6 +20,8 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan("dev"))
     console.log(`mode : ${process.env.NODE_ENV}`)
 }
+
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded())
 app.use(cookieParser())
