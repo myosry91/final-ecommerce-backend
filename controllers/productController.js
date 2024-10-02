@@ -9,7 +9,6 @@ exports.uploadProductImages = uploadMixOfImages([
 ], "products", "product")
 
 exports.createProduct = asyncWrapper(async (req, res) => {
-    console.log(req.files);
 
     if (req.files) {
         req.body.imgCover = req.files.imgCover[0].filename
@@ -65,7 +64,6 @@ exports.getAllProducts = asyncWrapper(async (req, res) => {
 
 exports.updateProduct = asyncWrapper(async (req, res) => {
     if (req.files) {
-        console.log(req.files);
         if (req.files.imgCover) {
             req.body.imgCover = req.files.imgCover[0].filename
         }
