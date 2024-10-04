@@ -36,7 +36,6 @@ categorySchema.post('init', function(doc) {
       const imgUrl = `${process.env.BASE_URL}/categories/${doc.image}`;
       doc.image = imgUrl;
   }
-  console.log(doc);
   
 });
 
