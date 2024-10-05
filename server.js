@@ -12,13 +12,9 @@ const categoriesRoutes = require("./routes/categoryRoute");
 const brandsRoutes = require("./routes/brandRoute");
 const authRoutes = require("./routes/authRoute")
 const productsRoutes = require("./routes/productRoute")
-<<<<<<< HEAD
 const ordersRoutes = require("./routes/orderRoute");
-const { DBConnection } = require('./configs/DB')
-=======
 const { DBConnection } = require('./configs/DB');
 const { seedToDataBase } = require("./utils/seeding");
->>>>>>> 03d0b11b64385e592cf69929a605aa22cb5922bb
 const app = express()
 DBConnection()
 // seedToDataBase()
