@@ -12,6 +12,7 @@ const categoriesRoutes = require("./routes/categoryRoute");
 const brandsRoutes = require("./routes/brandRoute");
 const authRoutes = require("./routes/authRoute")
 const productsRoutes = require("./routes/productRoute")
+const ordersRoutes = require("./routes/orderRoute");
 const { DBConnection } = require('./configs/DB')
 const app = express()
 DBConnection()
@@ -32,6 +33,7 @@ app.use('/api/v1/users', userRoutes)
 app.use(`/api/v1/categories`, categoriesRoutes);
 app.use(`/api/v1/brands`, brandsRoutes);
 app.use(`/api/v1/products`, productsRoutes);
+app.use(`/api/v1/orders`, ordersRoutes);
 
 
 app.all("*", (req, res, next) => {
