@@ -5,6 +5,13 @@ const orderSchema = mongoose.Schema({
   number: {
     type: Number,
   },
+  orderItems: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "OrderItem",
+      required: true,
+    },
+  ],
   orderDate: {
     type: Date,
     default: Date.now,
@@ -15,8 +22,13 @@ const orderSchema = mongoose.Schema({
     required: true,
   },
   price: {
-    type: Number,
+    type: String,
+    // required: true,
+  },
+  status: {
+    type: String,
     required: true,
+    default: "0",
   },
   status: {
     type: String,

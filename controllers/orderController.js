@@ -1,14 +1,44 @@
 const asyncWrapper = require("../utils/asyncWrapper");
 const { getDocument, deleteDocument } = require("../utils/handler");
 const Order = require("../models/order");
+const { OrderItem } = require("../models/order-item");
 
 exports.createOrder = asyncWrapper(async (req, res) => {
-  // let order = new Order({
-  //   user: req.body.user,
-  //   price: req.body.price,
-  //   status: req.body.status,
-  // });
-  const order = await Order.create(req.body);
+  const orderItemsIds = Promise.all(
+    req.body.orderItems.map(async (orderItem) => {
+      let newOrderItem = new OrderItem({
+        quantity: orderItem.quantity,
+        product: orderItem.product,
+      });
+
+      newOrderItem = await newOrderItem.save();
+
+      return newOrderItem._id;
+    })
+  );
+  const orderItemsIdsResolved = await orderItemsIds;
+
+  const totalPrices = await Promise.all(
+    orderItemsIdsResolved.map(async (orderItemId) => {
+      const orderItem = await OrderItem.findById(orderItemId).populate(
+        "product",
+        "price"
+      );
+      const totalPrice = orderItem.product.price * orderItem.quantity;
+      return totalPrice;
+    })
+  );
+
+  const totalPrice = totalPrices.reduce((a, b) => a + b, 0);
+
+  let order = new Order({
+    orderItems:orderItemsIdsResolved,
+    user: req.body.user,
+    price: totalPrice,
+    status: req.body.status,
+  });
+  order = await order.save();
+  // const order = await Order.create(req.body);
   return res.status(201).json({ data: order });
 });
 
@@ -19,6 +49,12 @@ exports.getAllOrders = asyncWrapper(async (req, res) => {
 
   const orderList = await Order.find()
     .populate("user", "name")
+    .populate({
+      path: "orderItems",
+      populate: {
+        path: "product",
+      },
+    })
     .sort({ dateOrdered: -1 })
     .skip(skip)
     .limit(limit);
@@ -78,10 +114,16 @@ exports.getOrdersCount = asyncWrapper(async (req, res) => {
 
 // search by user
 exports.getUserOrders = asyncWrapper(async (req, res) => {
-  
-  const userOrderList = await Order.find({ user: req.params.userid }).sort({
-    dateOrdered: -1,
-  });
+  const userOrderList = await Order.find({ user: req.params.userid })
+    .populate({
+      path: "orderItems",
+      populate: {
+        path: "product",
+      },
+    })
+    .sort({
+      dateOrdered: -1,
+    });
 
   return res.status(201).json({ data: userOrderList });
 });
