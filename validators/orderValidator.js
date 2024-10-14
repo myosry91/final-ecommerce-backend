@@ -4,20 +4,20 @@ const User = require("../models/user");
 const statusOptions = ["pending", "processing", "complete", "canceled"];
 
 exports.createOrderValidator = [
-  check("price")
-    .notEmpty()
-    .withMessage("Order price is required.")
-    .isNumeric()
-    .withMessage("Order price must be a number.")
-    .custom((value) => {
-      if (value < 0) {
-        throw new Error("Order price must be greater than or equal to 0.");
-      }
-      if (value > 20000) {
-        throw new Error("Order price must be less than or equal to 20000.");
-      }
-      return true;
-    }),
+  // check("price")
+  //   .notEmpty()
+  //   .withMessage("Order price is required.")
+  //   .isNumeric()
+  //   .withMessage("Order price must be a number.")
+  //   .custom((value) => {
+  //     if (value < 0) {
+  //       throw new Error("Order price must be greater than or equal to 0.");
+  //     }
+  //     if (value > 20000) {
+  //       throw new Error("Order price must be less than or equal to 20000.");
+  //     }
+  //     return true;
+  //   }),
 
   check("user")
     .notEmpty()
