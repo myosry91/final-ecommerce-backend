@@ -17,7 +17,6 @@ const { DBConnection } = require('./configs/DB');
 const { seedToDataBase } = require("./utils/seeding");
 const app = express()
 DBConnection()
-seedToDataBase()
 // Middleware
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan("dev"))
