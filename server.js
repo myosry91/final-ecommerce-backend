@@ -14,7 +14,7 @@ const authRoutes = require("./routes/authRoute")
 const productsRoutes = require("./routes/productRoute")
 const ordersRoutes = require("./routes/orderRoute");
 const { DBConnection } = require('./configs/DB');
-const { seedToDataBase } = require("./utils/seeding");
+// const { seedToDataBase } = require("./utils/seeding");
 const app = express()
 DBConnection()
 // Middleware
