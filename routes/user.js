@@ -6,6 +6,7 @@ const {
   getUser,
   updateUser,
 } = require("../controllers/userController");
+const { authentication, allowedTo } = require("../middlewares/authMiddleware");
 const {
   createUserValidator,
   getUserValidator,
@@ -16,11 +17,11 @@ const router = require("express").Router();
 
 router
   .route("/")
-  .post(uploadUserImg, createUserValidator, createUser)
-  .get(getAllUsers);
+  .post(authentication, allowedTo("admin"),uploadUserImg, createUserValidator, createUser)
+  .get(authentication, allowedTo("admin"),getAllUsers);
 router
   .route("/:id")
-  .get(getUserValidator, getUser)
-  .put(uploadUserImg, updateUserValidator, updateUser)
-  .delete(deleteUserValidator, deleteUser);
+  .get(authentication, allowedTo("admin"),getUserValidator, getUser)
+  .put(authentication, allowedTo("admin"),uploadUserImg, updateUserValidator, updateUser)
+  .delete(authentication, allowedTo("admin"),deleteUserValidator, deleteUser);
 module.exports = router;

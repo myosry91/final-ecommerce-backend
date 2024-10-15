@@ -8,6 +8,7 @@ const {
 } = require("../controllers/categoryController");
 const express = require("express");
 const { createCategoryValidator, getCategoryValidator, updateCategoryValidator, deleteCategoryValidator } = require("../validators/categoryValidator");
+const { authentication, allowedTo } = require("../middlewares/authMiddleware");
 const router = express.Router();
 // const multer = require("multer");
 
@@ -39,11 +40,11 @@ const router = express.Router();
 router
   .route("/")
   .get(getAllCategories)
-  .post(uploadCategoryImg, createCategoryValidator,createCategory);
+  .post(authentication, allowedTo("admin"),uploadCategoryImg, createCategoryValidator,createCategory);
 router
   .route("/:id")
   .get(getCategoryValidator,getCategory)
-  .put(uploadCategoryImg, updateCategoryValidator,updateCategory)
-  .delete(deleteCategoryValidator,deleteCategory);
+  .put(authentication, allowedTo("admin"),uploadCategoryImg, updateCategoryValidator,updateCategory)
+  .delete(authentication, allowedTo("admin"),deleteCategoryValidator,deleteCategory);
 
 module.exports = router;
