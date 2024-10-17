@@ -34,8 +34,19 @@ exports.login = asyncWrapper(async(req,res,next)=>{
         secure: true,
         sameSite: "None",
         maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
+    });
     return res.status(200).json({data : user})
 
 })
 
+
+exports.logoutCtrl = asyncWrapper(async (req, res) => {
+    res.clearCookie("access_token");
+    res.send({ success: true });
+}),
+
+exports.getCurrentUserCtrl= asyncWrapper(async (req, res) => {
+    const user = await User.findOne({ _id: req.user._id });
+    if (!user) return res.status(404).json({ success: false, error: "user not found." })
+    res.status(200).json({ success: true, data: user });
+})
