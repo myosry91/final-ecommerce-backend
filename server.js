@@ -22,8 +22,13 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan("dev"))
     console.log(`mode : ${process.env.NODE_ENV}`)
 }
-
-app.use(cors())
+app.use(
+	cors({
+		origin: ['http://localhost:5173'],
+		methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+		credentials: true,
+	})
+);
 app.use(express.json())
 app.use(express.urlencoded())
 app.use(cookieParser())
