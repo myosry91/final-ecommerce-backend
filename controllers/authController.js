@@ -29,11 +29,12 @@ exports.login = asyncWrapper(async(req,res,next)=>{
 
     if(!isMatch) return next(new ApiError(process.env.INVALID_CREDENTIALS,401))
     const token =  createToken(user._id)
-    res.cookie("access_token",`Bearer ${token}` , {
-        httpOnly: true,
-        secure: true,
-        sameSite: "None",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+    res.cookie("access_token", `Bearer ${token}`, {
+        httpOnly: true, // Ensures the cookie is not accessible by JavaScript
+        // secure: false, // Only set to true in production (HTTPS)
+        // sameSite: "None", // Required for cross-site cookies (e.g., different domain or ports)
+        withCredentials: true, // Include cookies in requests
+        // maxAge: 7 * 24 * 60 * 60 * 1000, // Set cookie expiration time (1 week)
     });
     return res.status(200).json({data : user})
 

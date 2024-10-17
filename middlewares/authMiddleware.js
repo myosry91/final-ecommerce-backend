@@ -28,6 +28,8 @@ exports.authentication = asyncWrapper(async (req, res, next) => {
       401
     );
   req.user = currentUser;
+  console.log(req.user)
+  console.log("currentUser", currentUser)
   next();
 })
 
