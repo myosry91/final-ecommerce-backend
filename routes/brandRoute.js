@@ -8,6 +8,7 @@ const {
 } = require("../controllers/brandController");
 const express = require("express");
 const { createBrandValidator, deleteBrandValidator, updateBrandValidator, getBrandValidator } = require("../validators/BrandValidator");
+const { allowedTo, authentication } = require("../middlewares/authMiddleware");
 const router = express.Router();
 // const multer = require("multer");
 
@@ -39,11 +40,11 @@ const router = express.Router();
 router
   .route("/")
   .get(getAllBrands)
-  .post(uploadBrandImg, createBrandValidator,createBrand);
+  .post(authentication, allowedTo("admin"),uploadBrandImg, createBrandValidator,createBrand);
 router
   .route("/:id")
   .get(getBrandValidator,getBrand)
-  .put(uploadBrandImg, updateBrandValidator,updateBrand)
-  .delete(deleteBrandValidator,deleteBrand);
+  .put(authentication, allowedTo("admin"),uploadBrandImg, updateBrandValidator,updateBrand)
+  .delete(authentication, allowedTo("admin"),deleteBrandValidator,deleteBrand);
 
 module.exports = router;

@@ -37,6 +37,9 @@ const productSchema = mongoose.Schema({
     colors: {
         type: [String],
     },
+    color: {
+        type: String,
+    },
     imgCover: {
         type: String,
         required: [true, "Product image cover is required."],
@@ -60,6 +63,31 @@ const productSchema = mongoose.Schema({
     },
 }, { timestamps: true });
 
-// Create the Product model
+productSchema.post('save', function(doc) {    
+    if (doc.imgCover) {                
+        const imgUrl = `${process.env.BASE_URL}/products/${doc.imgCover}`;        
+        doc.imgCover = imgUrl;
+    }
+    if (doc.images) {
+        doc.images = doc.images.map((image) => {
+            return `${process.env.BASE_URL}/products/${image}`;
+        });
+    }
+  });
+  
+  // findOne , findAll , Update
+  productSchema.post('init', function(doc) {
+
+    if (doc.imgCover) {                
+        const imgUrl = `${process.env.BASE_URL}/products/${doc.imgCover}`;        
+        doc.imgCover = imgUrl;
+    }
+    if (doc.images) {
+        doc.images = doc.images.map((image) => {
+            return `${process.env.BASE_URL}/products/${image}`;
+        });
+    }
+    
+  });
 const Product = mongoose.model("Product", productSchema);
 module.exports = Product;

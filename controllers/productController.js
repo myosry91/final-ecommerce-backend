@@ -9,7 +9,6 @@ exports.uploadProductImages = uploadMixOfImages([
 ], "products", "product")
 
 exports.createProduct = asyncWrapper(async (req, res) => {
-    console.log(req.files);
 
     if (req.files) {
         req.body.imgCover = req.files.imgCover[0].filename
@@ -33,30 +32,31 @@ exports.getAllProducts = asyncWrapper(async (req, res) => {
     const minPrice = parseInt(req.query.minPrice) || 0
     const maxPrice = parseInt(req.query.maxPrice) || 0
     const size = req.query.size || ''
-    const colors = req.query.colors || []
+    // const colors = req.query.colors || []
+    const color = req.query.color || '';
     const filter = {}
     if(req.query.category){
         filter.category = req.query.category
     }
-    if(minPrice && maxPrice){
-        filter.price = { $gte: minPrice, $lte: maxPrice }
-    }
 
-    if(minPrice){
+    if (minPrice && maxPrice) {
+        filter.price = { $gte: minPrice, $lte: maxPrice }
+    } else if (minPrice) {
         filter.price = { $gte: minPrice }
-    }
-    if(maxPrice){
+    } else if (maxPrice) {
         filter.price = { $lte: maxPrice }
     }
 
-    if(colors.length > 0){
-        filter.colors = { $in: colors }
+    // if(colors.length > 0){
+    //     filter.colors = { $in: colors }
+    // }
+    if (color) {
+        filter.color = color
     }
 
     if(size){
         filter.size = size
     }
-   
     const products = await Product.find(filter).skip(skip).limit(limit).populate("category brand")
     const totalProducts = await Product.countDocuments(filter)
     return res.status(200).json({ page, limit, total: totalProducts, data: products })
@@ -65,7 +65,6 @@ exports.getAllProducts = asyncWrapper(async (req, res) => {
 
 exports.updateProduct = asyncWrapper(async (req, res) => {
     if (req.files) {
-        console.log(req.files);
         if (req.files.imgCover) {
             req.body.imgCover = req.files.imgCover[0].filename
         }

@@ -49,6 +49,8 @@ exports.createProductValidator = [
 
     check("colors")
         .optional(),
+    check("color")
+        .optional(),
 
 
     body("imgCover")
