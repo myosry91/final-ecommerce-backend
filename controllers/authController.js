@@ -40,7 +40,6 @@ exports.login = asyncWrapper(async(req,res,next)=>{
 
 })
 
-
 exports.logoutCtrl = asyncWrapper(async (req, res) => {
     res.clearCookie("access_token");
     res.send({ success: true });
